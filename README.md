@@ -1,7 +1,7 @@
 # Tracery.Core
 This is a rough port of [Tracery](https://github.com/galaxykate/tracery) by [Kate Compton](http://www.galaxykate.com/). The port is by Ishan Pranav and was heavily based on [Tracery.Net](https://github.com/josh-perry/Tracery.Net) by [Josh Parry](https://github.com/josh-perry). Both projects are available under the [Apache license 2.0](LICENSE.txt).
 
-Tracery.Core targets .NET Standard, so it can be used in .NET 5+, .NET Core, .NET Framework, Unity, Xamarin, and compatible environments.
+Tracery.Core targets .NET Standard, so it can be used with .NET 5+, .NET Core, .NET Framework, Mono, Unity, Xamarin, and other compatible environments.
 ## Motivation
 I re-implemented Josh Parry\'s Tracery.Net for use within [Rebus](https://github.com/ishanpranav/rebus), a multiplayer space trading game I was developing.
 
@@ -15,10 +15,23 @@ I re-implemented Josh Parry\'s Tracery.Net for use within [Rebus](https://github
 | Target Framework     | .NET Standard 1.3+ | .NET Framework 4.5.2                         |
 | Dependencies         |        None        | [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json), [YamlDotNet](https://github.com/aaubry/YamlDotNet) |
 | Preferred serializer |  [System.Text.Json](https://www.nuget.org/packages/System.Text.Json)  | [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) |
-| Built-in modifiers   |         No         |                      Yes                     |
 | Custom modifiers     |         Yes        |                      Yes                     |
 | Custom selectors     |         Yes        |                      No                      |
 | Deterministic        |       Optional     |                     Never                    |
+
+## Modifiers
+Tracery.Core uses [Humanizer](https://github.com/Humanizr/Humanizer) to provider more accurate modifiers than those in the original Tracery specification.
+
+| Description                   | Tracery.Core             | Tracery.Net     |
+| ----------------------------- | :----------------------: | :-------------: |
+| Convert to title case         | `capitalizeAll`, `title` | `capitalizeAll` |
+| Convert to sentence case      | `capitalize`, `sentence` | `capitalize`    |
+| Surround with quotation marks | N/A                      | `inQuotes`      |
+| Add succeeding comma          | N/A                      | `comma`         |
+| Convert to "bee speak"        | N/A                      | `beeSpeak`      |
+| Add preceding article         | N/A                      | `a`             |
+| Convert noun to plural        | N/A                      | `s`             |
+| Convert verb to past tense    | N/A                      | `ed`            |
 
 ## License
 This repository is licensed with the [Apache license 2.0](LICENSE.txt).
@@ -44,8 +57,14 @@ Grammar grammar = new()
     ["origin"] = new[] { "#[hero:#name#][heroPet:#animal#]story#" }
 };
 ```
+Then register custom and built-in modifiers. Extension methods require a reference to the `Tracery.Humanizer` project.
+```csharp
+grammmar.AddTracery()
+        .AddHumanizer();
 
-Then use a content selector to generate a string:
+grammar.Modifiers.Add("pirateSpeak", x => x.Replace("r", "rrr"));
+```
+Finally, use a content selector to generate a string:
 ```csharp
 Random random = Random.Shared;
 IContentSelector selector = new RandomContentSelector(random);

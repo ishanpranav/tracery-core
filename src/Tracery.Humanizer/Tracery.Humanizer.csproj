@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Product>Tracery.Core</Product>
+    <Product>Tracery.Core.Humanizer</Product>
     <Company>Ishan Pranav</Company>
-    <Authors>Ishan Pranav, Josh Parry, Kate Compton</Authors>
+    <Authors>Ishan Pranav</Authors>
     <Copyright>Copyright (c) 2022 Ishan Pranav</Copyright>
     <Description>A C# port of Kate Compton's Tracery text expansion library targeting .NET Standard</Description>
     <PackageProjectUrl>https://github.com/ishanpranav/tracery-core</PackageProjectUrl>
@@ -16,6 +16,7 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageTags>csharp;procedural-generation;dotnet;tracery;content-generator;tracery-engine;grammar</PackageTags>
+    <RootNamespace>Tracery</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,4 +37,12 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tracery\Tracery.csproj" />
+  </ItemGroup>
+  
 </Project>
