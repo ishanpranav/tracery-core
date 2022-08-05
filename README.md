@@ -15,26 +15,25 @@ I re-implemented Josh Parry\'s Tracery.Net for use within [Rebus](https://github
 | Target Framework     | .NET Standard 1.3+ | .NET Framework 4.5.2                         |
 | Dependencies         |        None        | [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json), [YamlDotNet](https://github.com/aaubry/YamlDotNet) |
 | Preferred serializer |  [System.Text.Json](https://www.nuget.org/packages/System.Text.Json)  | [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) |
+| Built-in modifiers   |         3/8        |                      8/8                     |
 | Custom modifiers     |         Yes        |                      Yes                     |
 | Custom selectors     |         Yes        |                      No                      |
 | Deterministic        |       Optional     |                     Never                    |
 
 ## Modifiers
-Tracery.Core uses [Humanizer](https://github.com/Humanizr/Humanizer) to provider more accurate modifiers than those in the original Tracery specification.
+Tracery.Core uses [Humanizer](https://github.com/Humanizr/Humanizer) for its modifiers, making them more accurate and robust than those in Kate Compton\'s original Tracery specification.
 
-| Description                   | Tracery.Core             | Tracery.Net     |
-| ----------------------------- | :----------------------: | :-------------: |
-| Convert to title case         | `capitalizeAll`, `title` | `capitalizeAll` |
-| Convert to sentence case      | `capitalize`, `sentence` | `capitalize`    |
-| Surround with quotation marks | N/A                      | `inQuotes`      |
-| Add succeeding comma          | N/A                      | `comma`         |
-| Convert to "bee speak"        | N/A                      | `beeSpeak`      |
-| Add preceding article         | N/A                      | `a`             |
-| Convert noun to plural        | N/A                      | `s`             |
-| Convert verb to past tense    | N/A                      | `ed`            |
+| Description                   | Tracery.Core             | Tracery / Tracery.Net |
+| ----------------------------- | :----------------------: | :-------------------: |
+| Convert to title case         | `capitalizeAll`, `title` | `capitalizeAll`       |
+| Convert to sentence case      | `capitalize`, `sentence` | `capitalize`          |
+| Surround with quotation marks | N/A                      | `inQuotes`            |
+| Add succeeding comma          | N/A                      | `comma`               |
+| Convert to "bee speak"        | N/A                      | `beeSpeak`            |
+| Add preceding article         | N/A                      | `a`                   |
+| Convert noun to plural        | `s`, `plural`            | `s`                   |
+| Convert verb to past tense    | N/A                      | `ed`                  |
 
-## License
-This repository is licensed with the [Apache license 2.0](LICENSE.txt).
 ## Usage
 The [Grammar](Grammar.cs) class implements `IDictionary<string, IReadOnlyList<string>>`, so the `System.Text.Json.JsonSerializer` has built-in support for the type:
 
@@ -57,21 +56,19 @@ Grammar grammar = new()
     ["origin"] = new[] { "#[hero:#name#][heroPet:#animal#]story#" }
 };
 ```
-Then register custom and built-in modifiers. Extension methods require a reference to the `Tracery.Humanizer` project.
+Optionally register modifiers. Extension methods require a reference to the `Tracery.Humanizer` project.
 ```csharp
-grammmar.AddTracery()
-        .AddHumanizer();
-
-grammar.Modifiers.Add("pirateSpeak", x => x.Replace("r", "rrr"));
+grammmar.AddTracery(); // Register built-in modifiers
+grammar.Modifiers.Add("pirateSpeak", x => x.Replace("r", "rrr")); // Register a custom modifier
 ```
 Finally, use a content selector to generate a string:
 ```csharp
 Random random = Random.Shared;
 IContentSelector selector = new RandomContentSelector(random);
 
-string result = grammar.Flatten(key: "#origin#", selector);
+string result = grammar.Flatten("#origin#", selector);
 ```
-Kate Compton\'s example grammar above produces the following output:
+Potential outputs from Kate Compton\'s example grammar above:
 ```
 Lina traveled with her pet duck. Lina was never indignant, for the duck was always too indignant.
 Yuuma traveled with her pet unicorn. Yuuma was never wistful, for the unicorn was always too indignant.
@@ -79,6 +76,8 @@ Azra traveled with her pet coyote. Azra was never wistful, for the coyote was al
 Yuuma traveled with her pet owl. Yuuma was never wistful, for the owl was always too courteous.
 Azra traveled with her pet zebra. Azra was never impassioned, for the zebra was always too astute.
 ```
+## License
+This repository is licensed with the [Apache license 2.0](LICENSE.txt).
 ## Attribution
 This software uses third-party libraries or other resources that may be
 distributed under licenses different than the software. Please see the third-party notices included [here](THIRD-PARTY-NOTICES.txt).
