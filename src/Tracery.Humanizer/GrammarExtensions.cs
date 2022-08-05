@@ -15,6 +15,7 @@ namespace Tracery
         public static Grammar AddTracery(this Grammar source)
         {
             return source
+                .AddPlural()
                 .AddSentenceCase()
                 .AddTitleCase();
         }
@@ -27,8 +28,27 @@ namespace Tracery
         public static Grammar AddHumanizer(this Grammar source)
         {
             return source
+                .AddPlural()
                 .AddSentenceCase()
                 .AddTitleCase();
+        }
+
+        /// <summary>
+        /// Adds the plural modifier (<c>*.s</c> or <c>*.plural</c>) to the specified <see cref="Grammar"/>.
+        /// </summary>
+        /// <param name="source">The <see cref="Grammar"/> to which modifiers are added.</param>
+        /// <returns>The <see cref="Grammar"/> so that additional calls can be chained.</returns>
+        public static Grammar AddPlural(this Grammar source)
+        {
+            source.Modifiers["s"] = ToPlural;
+            source.Modifiers["plural"] = ToPlural;
+
+            return source;
+        }
+
+        private static string ToPlural(string value)
+        {
+            return value.Pluralize();
         }
 
         /// <summary>
@@ -38,12 +58,15 @@ namespace Tracery
         /// <returns>The <see cref="Grammar"/> so that additional calls can be chained.</returns>
         public static Grammar AddSentenceCase(this Grammar source)
         {
-            source.Modifiers["capitalize"] = modify;
-            source.Modifiers["sentence"] = modify;
+            source.Modifiers["capitalize"] = ToSentenceCase;
+            source.Modifiers["sentence"] = ToSentenceCase;
 
-            string modify(string value) => value.Transform(To.SentenceCase);
-        
             return source;
+        }
+
+        private static string ToSentenceCase(string value)
+        {
+            return value.Transform(To.SentenceCase);
         }
 
         /// <summary>
@@ -53,12 +76,15 @@ namespace Tracery
         /// <returns>The <see cref="Grammar"/> so that additional calls can be chained.</returns>
         public static Grammar AddTitleCase(this Grammar source)
         {
-            source.Modifiers["capitalizeAll"] = modify;
-            source.Modifiers["title"] = modify;
-
-            string modify(string value) => value.Transform(To.TitleCase);
+            source.Modifiers["capitalizeAll"] = ToTitleCase;
+            source.Modifiers["title"] = ToTitleCase;
 
             return source;
+        }
+
+        private static string ToTitleCase(string value)
+        {
+            return value.Transform(To.TitleCase);
         }
     }
 }
