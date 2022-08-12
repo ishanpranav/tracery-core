@@ -16,6 +16,7 @@ I re-implemented Josh Parry\'s Tracery.Net for use within [Rebus](https://github
 | Dependencies         |        None        | [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json), [YamlDotNet](https://github.com/aaubry/YamlDotNet) |
 | Preferred serializer |  [System.Text.Json](https://www.nuget.org/packages/System.Text.Json)  | [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) |
 | Built-in modifiers   |         3/8        |                      8/8                     |
+| Variables            |         Yes        |                      Yes                     |
 | Custom modifiers     |         Yes        |                      Yes                     |
 | Custom selectors     |         Yes        |                      No                      |
 | Deterministic        |    Configurable    |                      No                      |
