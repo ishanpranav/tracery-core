@@ -37,12 +37,12 @@ Tracery.Core uses [Humanizer](https://github.com/Humanizr/Humanizer) for its mod
 | Convert verb to past tense    | N/A                      | `ed`                  |
 
 ## Usage
-The [Grammar](Grammar.cs) class implements `IDictionary<string, IReadOnlyList<string>>`, so the `System.Text.Json.JsonSerializer` has built-in support for the type:
+The `Grammar` class implements `IDictionary<string, IReadOnlyList<string>>`, so both Newtonsoft.Json and System.Text.Json have built-in support:
 
 ```csharp
 await using (FileStream utf8Json = File.OpenRead("grammar.json"))
 {
-    Grammar grammar = await JsonSerializer.DeserializeAsync<Grammar>(utf8Json);
+    Grammar grammar = await System.Text.Json.JsonSerializer.DeserializeAsync<Grammar>(utf8Json);
 }
 ```
 
@@ -58,9 +58,9 @@ Grammar grammar = new()
     ["origin"] = new[] { "#[hero:#name#][heroPet:#animal#]story#" }
 };
 ```
-Optionally register modifiers. Extension methods require a reference to the `Tracery.Humanizer` project.
+Optionally register modifiers:
 ```csharp
-grammmar.AddTracery(); // Register built-in modifiers
+grammmar.AddTracery(); // Register built-in modifiers (requires Tracery.Humanizer.dll)
 grammar.Modifiers.Add("pirateSpeak", x => x.Replace("r", "rrr")); // Register a custom modifier
 ```
 Finally, use a content selector to generate a string:
