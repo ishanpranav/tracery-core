@@ -3,7 +3,7 @@ This is a rough port of [Tracery](https://github.com/galaxykate/tracery) by [Kat
 
 Tracery.Core targets .NET Standard, so it can be used with .NET 5+, .NET Core, .NET Framework, Mono, Unity, Xamarin, and other compatible environments.
 ## Motivation
-I re-implemented Josh Parry\'s Tracery.Net for use within [Rebus](https://github.com/ishanpranav/rebus), a multiplayer space trading game I was developing.
+I re-implemented Josh Parry\'s Tracery.Net to solve the following issues:
 
 - Tracery.Net targets the .NET Framework 4.x and is not suitable for cross-platform development.
 - It does not allow the Random number generator to be seeded. My project relied on determinism, so the ability to supply custom content selectors was essential.
