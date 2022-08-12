@@ -18,7 +18,8 @@ I re-implemented Josh Parry\'s Tracery.Net for use within [Rebus](https://github
 | Built-in modifiers   |         3/8        |                      8/8                     |
 | Custom modifiers     |         Yes        |                      Yes                     |
 | Custom selectors     |         Yes        |                      No                      |
-| Deterministic        |       Optional     |                     Never                    |
+| Deterministic        |    Configurable    |                      No                      |
+| Case-insensitive     |    Configurable    |                      No                      | 
 
 ## Modifiers
 Tracery.Core uses [Humanizer](https://github.com/Humanizr/Humanizer) for its modifiers, making them more accurate and robust than those in Kate Compton\'s original Tracery specification.
@@ -64,9 +65,9 @@ grammar.Modifiers.Add("pirateSpeak", x => x.Replace("r", "rrr")); // Register a 
 Finally, use a content selector to generate a string:
 ```csharp
 Random random = Random.Shared;
-IContentSelector selector = new RandomContentSelector(random);
+IContentSelector contentSelector = new RandomContentSelector(random);
 
-string result = grammar.Flatten("#origin#", selector);
+string result = grammar.Flatten("#origin#", contentSelector);
 ```
 Potential outputs from Kate Compton\'s example grammar above:
 ```

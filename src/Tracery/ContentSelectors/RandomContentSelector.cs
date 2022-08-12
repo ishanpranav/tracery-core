@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Tracery.ContentSelectors
 {
     /// <summary>
-    /// An <see cref="IContentSelector"/> that uses the <see cref="Random"/> class to generate select uniformly-distributed symbols.
+    /// An <see cref="IContentSelector"/> that uses the <see cref="Random"/> class to generate select pseudo-random symbols.
     /// </summary>
     public class RandomContentSelector : IContentSelector
     {
@@ -20,7 +20,7 @@ namespace Tracery.ContentSelectors
         }
 
         /// <inheritdoc/>
-        public string Select(IReadOnlyList<string> candidates)
+        public string Select(string key, IReadOnlyList<string> candidates)
         {
             if (candidates.Count == 0)
             {

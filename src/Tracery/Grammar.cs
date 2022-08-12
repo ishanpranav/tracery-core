@@ -19,7 +19,6 @@ namespace Tracery
         private static readonly Regex s_variableRegex = new Regex(pattern: @"\[.+?\]", RegexOptions.Compiled);
 
         private readonly IDictionary<string, IReadOnlyList<string>> _rules;
-        private readonly Dictionary<string, string> _variables;
 
         /// <summary>
         /// Gets the modifiers included in the grammar.
@@ -55,11 +54,11 @@ namespace Tracery
         }
 
         /// <inheritdoc/>
-        public bool IsReadOnly
+        bool ICollection<KeyValuePair<string, IReadOnlyList<string>>>.IsReadOnly
         {
             get
             {
-                return false;
+                return _rules.IsReadOnly;
             }
         }
 
@@ -87,24 +86,29 @@ namespace Tracery
         /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> implementation to use when comparing keys.</param>
         public Grammar(IEqualityComparer<string> comparer)
         {
-            _rules = new Dictionary<string, IReadOnlyList<string>>(comparer);
             Modifiers = new Dictionary<string, Func<string, string>>(comparer);
-            _variables = new Dictionary<string, string>(comparer);
+            _rules = new Dictionary<string, IReadOnlyList<string>>(comparer);
         }
 
         /// <summary>
         /// Recursively resolves a rule using a content selector.
         /// </summary>
-        /// <param name="key">The starting rule.</param>
-        /// <param name="selector">The content selector.</param>
-        /// <returns>The flattened string.</returns>
-        public string Flatten(string key, IContentSelector selector)
+        /// <param name="rule">The starting rule.</param>
+        /// <param name="contentSelector">The content selection strategy used to select a rule from a collection of candidates.</param>
+        /// <returns>A string containing the flattened rule expansion.</returns>
+        /// <remarks>
+        /// <para>A rule is a string that can contain references to other rules. Each key refers to a collection of rules.</para>
+        /// <para>For example, the rule <c>"Hello, world!"</c> is flattened as-is, while flattening <c>"Hello, #name#"</c> involves recursively expanding all sub-rules (in this case, by resolving the key <c>"#name#"</c>).</para>
+        /// <para>Referenced rules can also be transformed. For example, a client can register a <c>plural</c> transformation by adding a function to the <see cref="Modifiers"/> property. Now, if <c>"#animal#"</c> resolves to <c>"eagle"</c>, <c>#animal.plural#</c> resolves to <c>"eagles"</c>.</para>
+        /// <para>Finally, an expansion can be saved in a variable (a dynamic rule) for re-use. Flattening <c>"#[hero:#name#][heroPet:#animal#]story#"</c> resolves <c>#name#</c>, saves it in the variable <c>hero</c>, resolves <c>#animal#</c>, saves it in the variable <c>heroPet</c>, and returns the expansion of <c>#story#</c>. The <c>story</c> rule can contain many instances of <c>#hero#</c> and <c>#heroPet#</c>, each of which resolves to its constant value.</para>
+        /// </remarks>
+        public string Flatten(string rule, IContentSelector contentSelector)
         {
-            MatchCollection expansionMatches = s_expansionRegex.Matches(key);
+            MatchCollection expansionMatches = s_expansionRegex.Matches(rule);
 
             if (expansionMatches.Count == 0)
             {
-                resolveVariables(key);
+                resolveVariables(rule);
             }
             else
             {
@@ -117,28 +121,21 @@ namespace Tracery
 
                     if (index != -1)
                     {
-                        expansion = expansion.Substring(0, index);
+                        expansion = expansion.Substring(startIndex: 0, index);
                     }
 
                     string selected;
 
                     if (_rules.TryGetValue(expansion, out IReadOnlyList<string> candidates))
                     {
-                        selected = selector.Select(candidates);
+                        selected = contentSelector.Select(expansion, candidates);
                     }
                     else
                     {
-                        if (_variables.TryGetValue(expansion, out string value))
-                        {
-                            selected = value;
-                        }
-                        else
-                        {
-                            selected = expansion;
-                        }
+                        selected = expansion;
                     }
 
-                    selected = Flatten(selected, selector);
+                    selected = Flatten(selected, contentSelector);
 
                     string[] modifierSegments = match.Value
                         .Replace(ExpansionDelimiter, string.Empty)
@@ -152,7 +149,7 @@ namespace Tracery
                         }
                     }
 
-                    key = key.Replace(match.Value, Flatten(selected, selector));
+                    rule = rule.Replace(match.Value, Flatten(selected, contentSelector));
                 }
             }
 
@@ -171,16 +168,16 @@ namespace Tracery
                     {
                         string[] segments = variable.Split(VariableDelimiterChar);
 
-                        _variables[segments[0]] = Flatten(segments[1], selector);
+                        _rules[segments[0]] = new string[] { Flatten(segments[1], contentSelector) };
                     }
                     else
                     {
-                        Flatten(ExpansionDelimiter + variable + ExpansionDelimiter, selector);
+                        Flatten(ExpansionDelimiter + variable + ExpansionDelimiter, contentSelector);
                     }
                 }
             }
 
-            return key;
+            return rule;
         }
 
         /// <inheritdoc/>
@@ -208,7 +205,7 @@ namespace Tracery
         }
 
         /// <inheritdoc/>
-        public void Add(KeyValuePair<string, IReadOnlyList<string>> item)
+        void ICollection<KeyValuePair<string, IReadOnlyList<string>>>.Add(KeyValuePair<string, IReadOnlyList<string>> item)
         {
             _rules.Add(item);
         }
@@ -220,19 +217,19 @@ namespace Tracery
         }
 
         /// <inheritdoc/>
-        public bool Contains(KeyValuePair<string, IReadOnlyList<string>> item)
+        bool ICollection<KeyValuePair<string, IReadOnlyList<string>>>.Contains(KeyValuePair<string, IReadOnlyList<string>> item)
         {
             return _rules.Contains(item);
         }
 
         /// <inheritdoc/>
-        public void CopyTo(KeyValuePair<string, IReadOnlyList<string>>[] array, int arrayIndex)
+        void ICollection<KeyValuePair<string, IReadOnlyList<string>>>.CopyTo(KeyValuePair<string, IReadOnlyList<string>>[] array, int arrayIndex)
         {
             _rules.CopyTo(array, arrayIndex);
         }
 
         /// <inheritdoc/>
-        public bool Remove(KeyValuePair<string, IReadOnlyList<string>> item)
+        bool ICollection<KeyValuePair<string, IReadOnlyList<string>>>.Remove(KeyValuePair<string, IReadOnlyList<string>> item)
         {
             return _rules.Remove(item);
         }

@@ -3,15 +3,16 @@
 namespace Tracery.ContentSelectors
 {
     /// <summary>
-    /// Defines a method for selecting symbols.
+    /// Defines a method for selecting rules.
     /// </summary>
     public interface IContentSelector
     {
         /// <summary>
-        /// Selects a symbol from a list of candidates.
+        /// Selects a rule from a list of candidates.
         /// </summary>
-        /// <param name="candidates">The list of candidate symbols.</param>
-        /// <returns>The chosen symbol.</returns>
-        string Select(IReadOnlyList<string> candidates);
+        /// <param name="key">The rule that is currently being processed.</param>
+        /// <param name="candidates">The list of candidate rules.</param>
+        /// <returns>The chosen rule.</returns>
+        string Select(string key, IReadOnlyList<string> candidates);
     }
 }
