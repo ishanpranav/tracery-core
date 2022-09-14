@@ -29,7 +29,7 @@ Tracery.Core uses [Humanizer](https://github.com/Humanizr/Humanizer) for its mod
 | ----------------------------- | :----------------------: | :-------------------: |
 | Convert to title case         | `capitalizeAll`, `title` | `capitalizeAll`       |
 | Convert to sentence case      | `capitalize`, `sentence` | `capitalize`          |
-| Surround with quotation marks | N/A                      | `inQuotes`            |
+| Surround with quotation marks | `inQuotes`, `"`          | `inQuotes`            |
 | Add succeeding comma          | N/A                      | `comma`               |
 | Convert to "bee speak"        | N/A                      | `beeSpeak`            |
 | Add preceding article         | N/A                      | `a`                   |

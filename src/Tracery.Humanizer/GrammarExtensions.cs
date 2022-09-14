@@ -86,5 +86,23 @@ namespace Tracery
         {
             return value.Transform(To.TitleCase);
         }
+
+        /// <summary>
+        /// Adds the surround-with quotes modifier (<c>*.inQuotes</c> or <c>*."</c>) to the specified <see cref="Grammar"/>.
+        /// </summary>
+        /// <param name="source">The <see cref="Grammar"/> to which modifiers are added.</param>
+        /// <returns>The <see cref="Grammar"/> so that additional calls can be chained.</returns>
+        public static Grammar AddQuotation(this Grammar source)
+        {
+            source.Modifiers["\""] = SurroundWithQuotes;
+            source.Modifiers["inQuotes"] = SurroundWithQuotes;
+
+            return source;
+        }
+
+        private static string SurroundWithQuotes(string value)
+        {
+            return $"\"{value}\"";
+        }
     }
 }
