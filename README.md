@@ -15,7 +15,7 @@ I re-implemented Josh Parry\'s Tracery.Net to solve the following issues:
 | Target Framework     | .NET Standard 1.3+ | .NET Framework 4.5.2                         |
 | Dependencies         |        None        | [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json), [YamlDotNet](https://github.com/aaubry/YamlDotNet) |
 | Preferred serializer |  [System.Text.Json](https://www.nuget.org/packages/System.Text.Json)  | [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) |
-| Built-in modifiers   |         3/8        |                      8/8                     |
+| Built-in modifiers   |         4/8        |                      8/8                     |
 | Variables            |         Yes        |                      Yes                     |
 | Custom modifiers     |         Yes        |                      Yes                     |
 | Custom selectors     |         Yes        |                      No                      |
@@ -29,7 +29,7 @@ Tracery.Core uses [Humanizer](https://github.com/Humanizr/Humanizer) for its mod
 | ----------------------------- | :----------------------: | :-------------------: |
 | Convert to title case         | `capitalizeAll`, `title` | `capitalizeAll`       |
 | Convert to sentence case      | `capitalize`, `sentence` | `capitalize`          |
-| Surround with quotation marks | `inQuotes`, `"`          | `inQuotes`            |
+| Surround with quotation marks | N/A                      | `inQuotes`            |
 | Add succeeding comma          | N/A                      | `comma`               |
 | Convert to "bee speak"        | N/A                      | `beeSpeak`            |
 | Add preceding article         | N/A                      | `a`                   |
