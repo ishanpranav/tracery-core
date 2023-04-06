@@ -60,7 +60,7 @@ Grammar grammar = new()
 ```
 Optionally register modifiers:
 ```csharp
-grammmar.AddTracery(); // Register built-in modifiers (requires Tracery.Humanizer.dll)
+grammar.AddTracery(); // Register built-in modifiers (requires Tracery.Humanizer.dll)
 grammar.Modifiers.Add("pirateSpeak", x => x.Replace("r", "rrr")); // Register a custom modifier
 ```
 Finally, use a content selector to generate a string:
